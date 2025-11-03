@@ -27,5 +27,37 @@ class Controller:
         self._view.txt_responsabile.value = f"Responsabile: {self._model.responsabile}"
         self._view.update()
 
-    # Altre Funzioni Event Handler
-    # TODO
+    def mostra_auto(self, e):
+        print("pulsante cliccato")
+        try:
+            automobili = self._model.get_automobili()
+            print("automobili lette")
+            self._view.lista_auto.controls.clear()
+            for auto in automobili:
+                self._view.lista_auto.controls.append(ft.Text(str(auto)))
+            self._view.update()
+        except Exception as err:
+            self._view.alert.show_alert(f"Errore nel caricamento automobili: {err}")
+
+    def cerca_auto(self, e):
+        modello = self._view.input_modello_auto.value.strip()
+        if modello == "":
+            self._view.show_alert("Inserisci un modello da cercare.")
+            return
+
+        automobili = self._model.cerca_automobili_per_modello(modello)
+        if not automobili:
+            self._view.show_alert("Nessuna automobile trovata con quel modello.")
+            return
+        # Svuota la lista di ricerca
+        self._view.lista_auto_ricerca.controls.clear()
+
+        for auto in automobili:
+            riga = ft.Text(f"{auto.id} - {auto.marca} {auto.modello} ({auto.targa}) - {auto.anno} - {auto.prezzo}€/giorno")
+            self._view.lista_auto_ricerca.controls.append(riga)
+
+        self._view.update()
+
+
+
+
